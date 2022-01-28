@@ -1,0 +1,111 @@
+definitions:
+  handlers.JSONResult:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  handlers.PostStruct:
+    properties:
+      command_content:
+        example: ping baidu.com -c 10
+        type: string
+      command_type:
+        example: sh
+        type: string
+      depends_on:
+        items:
+          type: string
+        type: array
+      envs:
+        additionalProperties:
+          type: string
+        example:
+          env1: value1
+          env2: value2
+        type: object
+      name:
+        type: string
+      timeout:
+        example: 5m
+        type: string
+    required:
+    - command_content
+    - command_type
+    type: object
+info:
+  contact: {}
+  description: This is a os remote executor orchestration script interface.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: OSRemoteExecution API
+  version: v1.0.0
+paths:
+  /:
+    get:
+      description: List all current task IDs
+      parameters:
+      - description: sort by [start,ttl,completed]
+        in: query
+        name: sort
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.JSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.JSONResult'
+      summary: List
+      tags:
+      - Exec
+    post:
+      description: Execute command or script content
+      parameters:
+      - description: scripts
+        in: body
+        name: scripts
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/handlers.PostStruct'
+          type: array
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.JSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.JSONResult'
+      summary: Exec
+      tags:
+      - Exec
+  /{id}:
+    get:
+      description: Get the execution result
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.JSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.JSONResult'
+      summary: Get
+      tags:
+      - Exec
+swagger: "2.0"
