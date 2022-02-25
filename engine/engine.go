@@ -40,7 +40,7 @@ func NewExecPool() {
 				if Pool.QueueLength() >= int64(size) {
 					Pool.SetSize(size + 15)
 				}
-			} else if percent[0] >= 80 && size > defaultPoolSize {
+			} else if size > defaultPoolSize {
 				Pool.SetSize(size - 15)
 			}
 		}

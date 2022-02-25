@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/Jeffail/tunny v0.1.4
 	github.com/StackExchange/wmi v1.2.1
-	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/dgraph-io/badger/v3 v3.2103.2
 	github.com/gin-contrib/pprof v1.3.0
@@ -30,6 +29,7 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20210927113745-59d0afb8317a // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
