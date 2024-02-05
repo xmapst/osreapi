@@ -1,0 +1,797 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Operating system remote execution interface.",
+        "title": "OS Remote Executor API",
+        "contact": {
+            "name": "osreapi",
+            "url": "https://github.com/xmapst/osreapi/issues"
+        },
+        "license": {
+            "name": "GPL-3.0",
+            "url": "https://github.com/xmapst/osreapi/blob/main/LICENSE"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/v1/pool": {
+            "get": {
+                "description": "detail pool",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Pool"
+                ],
+                "summary": "pool detail",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "post task step",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Pool"
+                ],
+                "summary": "pool setting",
+                "parameters": [
+                    {
+                        "description": "pool setting",
+                        "name": "setting",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.Pool"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/state": {
+            "get": {
+                "description": "detail server state",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "State"
+                ],
+                "summary": "server state detail",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/task": {
+            "get": {
+                "description": "get all task",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "post task step",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "post task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "task asynchronously",
+                        "name": "async",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "task timeout",
+                        "name": "timeout",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "task envs",
+                        "name": "env_vars",
+                        "in": "query"
+                    },
+                    {
+                        "description": "scripts",
+                        "name": "scripts",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.Step"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/task/{task}": {
+            "get": {
+                "description": "detail task",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "manager task",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task manager",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "paused",
+                            "kill",
+                            "pause",
+                            "resume"
+                        ],
+                        "type": "string",
+                        "default": "paused",
+                        "description": "management action",
+                        "name": "action",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "1m",
+                        "description": "how long to pause; if empty, manual continuation is required",
+                        "name": "duration",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/task/{task}/step/{step}": {
+            "get": {
+                "description": "detail task step",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task step detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "step id",
+                        "name": "step",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "manager task step",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task step manager",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "step id",
+                        "name": "step",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "paused",
+                            "kill",
+                            "pause",
+                            "resume"
+                        ],
+                        "type": "string",
+                        "default": "paused",
+                        "description": "management action",
+                        "name": "action",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "1m",
+                        "description": "how long to pause; if empty, manual continuation is required",
+                        "name": "duration",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/task/{task}/workspace": {
+            "get": {
+                "description": "task workspace list",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task workspace list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "dir path",
+                        "name": "path",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "task workspace upload file or dir",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task workspace upload",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "dir path",
+                        "name": "path",
+                        "in": "query"
+                    },
+                    {
+                        "type": "file",
+                        "description": "files",
+                        "name": "files",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "task workspace delete",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "task workspace delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "dir path",
+                        "name": "path",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/task": {
+            "post": {
+                "description": "post task step",
+                "consumes": [
+                    "application/json",
+                    "application/toml",
+                    "application/x-yaml",
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/x-yaml",
+                    "application/toml"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "post task",
+                "parameters": [
+                    {
+                        "description": "scripts",
+                        "name": "scripts",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.BaseRes"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "types.BaseRes": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 255
+                },
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "message"
+                },
+                "timestamp": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.Notify": {
+            "type": "object",
+            "required": [
+                "action",
+                "type"
+            ],
+            "properties": {
+                "action": {
+                    "description": "or after",
+                    "type": "string",
+                    "example": "before"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "webhook"
+                }
+            }
+        },
+        "types.Pool": {
+            "type": "object",
+            "required": [
+                "size"
+            ],
+            "properties": {
+                "running": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "waiting": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.Step": {
+            "type": "object",
+            "required": [
+                "command_content",
+                "command_type"
+            ],
+            "properties": {
+                "command_content": {
+                    "type": "string",
+                    "example": "sleep 10"
+                },
+                "command_type": {
+                    "type": "string",
+                    "example": "powershell"
+                },
+                "depends_on": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        ""
+                    ]
+                },
+                "env_vars": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "env1=value1",
+                        "env2=value2"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "example": "script.ps1"
+                },
+                "notify": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Notify"
+                    }
+                },
+                "timeout": {
+                    "type": "string",
+                    "example": "3m"
+                }
+            }
+        },
+        "types.Task": {
+            "type": "object",
+            "properties": {
+                "async": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "env_vars": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        ""
+                    ]
+                },
+                "id": {
+                    "type": "string",
+                    "example": ""
+                },
+                "notify": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Notify"
+                    }
+                },
+                "step": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Step"
+                    }
+                },
+                "timeout": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        }
+    }
+}

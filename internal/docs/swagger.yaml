@@ -1,0 +1,557 @@
+definitions:
+  types.BaseRes:
+    properties:
+      code:
+        example: 255
+        type: integer
+      data: {}
+      message:
+        example: message
+        type: string
+      timestamp:
+        type: integer
+    type: object
+  types.Notify:
+    properties:
+      action:
+        description: or after
+        example: before
+        type: string
+      type:
+        example: webhook
+        type: string
+    required:
+    - action
+    - type
+    type: object
+  types.Pool:
+    properties:
+      running:
+        type: integer
+      size:
+        example: 30
+        type: integer
+      total:
+        type: integer
+      waiting:
+        type: integer
+    required:
+    - size
+    type: object
+  types.Step:
+    properties:
+      command_content:
+        example: sleep 10
+        type: string
+      command_type:
+        example: powershell
+        type: string
+      depends_on:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      env_vars:
+        example:
+        - env1=value1
+        - env2=value2
+        items:
+          type: string
+        type: array
+      name:
+        example: script.ps1
+        type: string
+      notify:
+        items:
+          $ref: '#/definitions/types.Notify'
+        type: array
+      timeout:
+        example: 3m
+        type: string
+    required:
+    - command_content
+    - command_type
+    type: object
+  types.Task:
+    properties:
+      async:
+        example: false
+        type: boolean
+      env_vars:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      id:
+        example: ""
+        type: string
+      notify:
+        items:
+          $ref: '#/definitions/types.Notify'
+        type: array
+      step:
+        items:
+          $ref: '#/definitions/types.Step'
+        type: array
+      timeout:
+        example: ""
+        type: string
+    type: object
+info:
+  contact:
+    name: osreapi
+    url: https://github.com/xmapst/osreapi/issues
+  description: Operating system remote execution interface.
+  license:
+    name: GPL-3.0
+    url: https://github.com/xmapst/osreapi/blob/main/LICENSE
+  title: OS Remote Executor API
+  version: "1.0"
+paths:
+  /api/v1/pool:
+    get:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: detail pool
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: pool detail
+      tags:
+      - Pool
+    post:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: post task step
+      parameters:
+      - description: pool setting
+        in: body
+        name: setting
+        required: true
+        schema:
+          $ref: '#/definitions/types.Pool'
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: pool setting
+      tags:
+      - Pool
+  /api/v1/state:
+    get:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: detail server state
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: server state detail
+      tags:
+      - State
+  /api/v1/task:
+    get:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: get all task
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task list
+      tags:
+      - Task
+    post:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: post task step
+      parameters:
+      - description: task id
+        in: query
+        name: id
+        type: string
+      - default: false
+        description: task asynchronously
+        in: query
+        name: async
+        type: boolean
+      - description: task timeout
+        in: query
+        name: timeout
+        type: string
+      - description: task envs
+        in: query
+        items:
+          type: string
+        name: env_vars
+        type: array
+      - description: scripts
+        in: body
+        name: scripts
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/types.Step'
+          type: array
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: post task
+      tags:
+      - Task
+  /api/v1/task/{task}:
+    get:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: detail task
+      parameters:
+      - description: task id
+        in: path
+        name: task
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task detail
+      tags:
+      - Task
+    put:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: manager task
+      parameters:
+      - description: task id
+        in: path
+        name: task
+        required: true
+        type: string
+      - default: paused
+        description: management action
+        enum:
+        - paused
+        - kill
+        - pause
+        - resume
+        in: query
+        name: action
+        type: string
+      - default: 1m
+        description: how long to pause; if empty, manual continuation is required
+        in: query
+        name: duration
+        type: string
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task manager
+      tags:
+      - Task
+  /api/v1/task/{task}/step/{step}:
+    get:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: detail task step
+      parameters:
+      - description: task id
+        in: path
+        name: task
+        required: true
+        type: string
+      - description: step id
+        in: path
+        name: step
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task step detail
+      tags:
+      - Task
+    put:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: manager task step
+      parameters:
+      - description: task id
+        in: path
+        name: task
+        required: true
+        type: string
+      - description: step id
+        in: path
+        name: step
+        required: true
+        type: string
+      - default: paused
+        description: management action
+        enum:
+        - paused
+        - kill
+        - pause
+        - resume
+        in: query
+        name: action
+        type: string
+      - default: 1m
+        description: how long to pause; if empty, manual continuation is required
+        in: query
+        name: duration
+        type: string
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task step manager
+      tags:
+      - Task
+  /api/v1/task/{task}/workspace:
+    delete:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: task workspace delete
+      parameters:
+      - description: task id
+        in: path
+        name: task
+        required: true
+        type: string
+      - description: dir path
+        in: query
+        name: path
+        type: string
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task workspace delete
+      tags:
+      - Task
+    get:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: task workspace list
+      parameters:
+      - description: task id
+        in: path
+        name: task
+        required: true
+        type: string
+      - description: dir path
+        in: query
+        name: path
+        type: string
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task workspace list
+      tags:
+      - Task
+    post:
+      consumes:
+      - multipart/form-data
+      description: task workspace upload file or dir
+      parameters:
+      - description: task id
+        in: path
+        name: task
+        required: true
+        type: string
+      - description: dir path
+        in: query
+        name: path
+        type: string
+      - description: files
+        in: formData
+        name: files
+        required: true
+        type: file
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: task workspace upload
+      tags:
+      - Task
+  /api/v2/task:
+    post:
+      consumes:
+      - application/json
+      - application/toml
+      - application/x-yaml
+      - multipart/form-data
+      description: post task step
+      parameters:
+      - description: scripts
+        in: body
+        name: scripts
+        required: true
+        schema:
+          $ref: '#/definitions/types.Task'
+      produces:
+      - application/json
+      - application/x-yaml
+      - application/toml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.BaseRes'
+      summary: post task
+      tags:
+      - Task
+swagger: "2.0"
