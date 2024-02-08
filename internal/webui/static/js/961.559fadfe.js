@@ -55037,11 +55037,10 @@ var List_AvatarList = {
   name: 'AvatarList',
   props: AvatarListProps,
   render: function render(h) {
-    var _className;
     var _this$$props = this.$props,
       prefixCls = _this$$props.prefixCls,
       size = _this$$props.size;
-    var className = (_className = {}, (0,defineProperty/* default */.Z)(_className, "".concat(prefixCls), true), (0,defineProperty/* default */.Z)(_className, "".concat(size), true), _className);
+    var className = (0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)({}, "".concat(prefixCls), true), "".concat(size), true);
     var items = filterEmpty(this.$slots.default);
     var itemsDom = items && items.length ? h("ul", {
       "class": "".concat(prefixCls, "-items")
@@ -55052,9 +55051,8 @@ var List_AvatarList = {
   },
   methods: {
     getItems: function getItems(items) {
-      var _className2;
       var h = this.$createElement;
-      var className = (_className2 = {}, (0,defineProperty/* default */.Z)(_className2, "".concat(this.prefixCls, "-item"), true), (0,defineProperty/* default */.Z)(_className2, "".concat(this.size), true), _className2);
+      var className = (0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)({}, "".concat(this.prefixCls, "-item"), true), "".concat(this.size), true);
       var totalSize = items.length;
       if (this.maxLength > 0) {
         items = items.slice(0, this.maxLength);

@@ -3144,44 +3144,44 @@ var app = {
     lang: 'en-US',
     _antLocale: {}
   },
-  mutations: (_mutations = {}, (0,defineProperty/* default */.Z)(_mutations, mutation_types/* SIDEBAR_TYPE */.mQ, function (state, type) {
+  mutations: (_mutations = {}, (0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)(_mutations, mutation_types/* SIDEBAR_TYPE */.mQ, function (state, type) {
     state.sideCollapsed = type;
     store_legacy_default().set(mutation_types/* SIDEBAR_TYPE */.mQ, type);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_MOBILE_TYPE */.gF, function (state, isMobile) {
+  }), mutation_types/* TOGGLE_MOBILE_TYPE */.gF, function (state, isMobile) {
     state.isMobile = isMobile;
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_NAV_THEME */.$Y, function (state, theme) {
+  }), mutation_types/* TOGGLE_NAV_THEME */.$Y, function (state, theme) {
     state.theme = theme;
     store_legacy_default().set(mutation_types/* TOGGLE_NAV_THEME */.$Y, theme);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_LAYOUT */.bB, function (state, mode) {
+  }), mutation_types/* TOGGLE_LAYOUT */.bB, function (state, mode) {
     state.layout = mode;
     store_legacy_default().set(mutation_types/* TOGGLE_LAYOUT */.bB, mode);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_FIXED_HEADER */.rk, function (state, mode) {
+  }), mutation_types/* TOGGLE_FIXED_HEADER */.rk, function (state, mode) {
     state.fixedHeader = mode;
     store_legacy_default().set(mutation_types/* TOGGLE_FIXED_HEADER */.rk, mode);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_FIXED_SIDEBAR */.JZ, function (state, mode) {
+  }), mutation_types/* TOGGLE_FIXED_SIDEBAR */.JZ, function (state, mode) {
     state.fixedSidebar = mode;
     store_legacy_default().set(mutation_types/* TOGGLE_FIXED_SIDEBAR */.JZ, mode);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_CONTENT_WIDTH */.yK, function (state, type) {
+  }), mutation_types/* TOGGLE_CONTENT_WIDTH */.yK, function (state, type) {
     state.contentWidth = type;
     store_legacy_default().set(mutation_types/* TOGGLE_CONTENT_WIDTH */.yK, type);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_HIDE_HEADER */.aG, function (state, type) {
+  }), mutation_types/* TOGGLE_HIDE_HEADER */.aG, function (state, type) {
     state.autoHideHeader = type;
     store_legacy_default().set(mutation_types/* TOGGLE_HIDE_HEADER */.aG, type);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_COLOR */.pI, function (state, color) {
+  }), mutation_types/* TOGGLE_COLOR */.pI, function (state, color) {
     state.color = color;
     store_legacy_default().set(mutation_types/* TOGGLE_COLOR */.pI, color);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_WEAK */.TV, function (state, mode) {
+  }), mutation_types/* TOGGLE_WEAK */.TV, function (state, mode) {
     state.weak = mode;
     store_legacy_default().set(mutation_types/* TOGGLE_WEAK */.TV, mode);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* APP_LANGUAGE */.gJ, function (state, lang) {
+  }), (0,defineProperty/* default */.Z)((0,defineProperty/* default */.Z)(_mutations, mutation_types/* APP_LANGUAGE */.gJ, function (state, lang) {
     var antd = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     state.lang = lang;
     state._antLocale = antd;
     store_legacy_default().set(mutation_types/* APP_LANGUAGE */.gJ, lang);
-  }), (0,defineProperty/* default */.Z)(_mutations, mutation_types/* TOGGLE_MULTI_TAB */.zP, function (state, bool) {
+  }), mutation_types/* TOGGLE_MULTI_TAB */.zP, function (state, bool) {
     store_legacy_default().set(mutation_types/* TOGGLE_MULTI_TAB */.zP, bool);
     state.multiTab = bool;
-  }), _mutations),
+  })),
   actions: {
     setLang: function setLang(_ref, lang) {
       var commit = _ref.commit;
@@ -4114,7 +4114,7 @@ module.exports = __webpack_require__.p + "img/logo.869e2a5e.svg";
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "js/" + ({"113":"lang-zh-CN","560":"lang-zh-CN-pool","616":"lang-zh-CN-global","639":"lang-zh-CN-system","704":"lang-zh-CN-task","884":"lang-zh-CN-menu"}[chunkId] || chunkId) + "." + {"113":"21f13c6e","560":"d7513977","608":"e44a0803","616":"6192d033","639":"6aa706ea","688":"3af90c7f","704":"65d160a8","737":"7b3dc51a","884":"93523ccf","961":"4efb37b7"}[chunkId] + ".js";
+/******/ 			return "js/" + ({"113":"lang-zh-CN","560":"lang-zh-CN-pool","616":"lang-zh-CN-global","639":"lang-zh-CN-system","704":"lang-zh-CN-task","884":"lang-zh-CN-menu"}[chunkId] || chunkId) + "." + {"113":"21f13c6e","560":"d7513977","608":"e44a0803","616":"6192d033","639":"6aa706ea","688":"3af90c7f","704":"65d160a8","737":"7b3dc51a","884":"93523ccf","961":"559fadfe"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
