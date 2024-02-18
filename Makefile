@@ -2,7 +2,7 @@ SHELL=/bin/bash
 GIT_URL := "https://github.com/xmapst/osreapi.git"
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD || echo "Unknown")
 GIT_COMMIT := $(shell git rev-parse HEAD || echo "Unknown")
-VERSION := $(shell git describe --tags --abbrev=0 || echo "Unknown")
+VERSION := $(shell git describe --tags || echo "Unknown")
 USER_NAME := $(shell git config user.name || echo "Unknown")
 USER_EMAIL := $(shell git config user.email || echo "Unknown")
 BUILD_TIME := $(shell date +"%Y-%m-%d %H:%M:%S %Z" || echo "Unknown")
