@@ -2,6 +2,7 @@ package bolt
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/gob"
 	"errors"
 	"os"
@@ -11,6 +12,7 @@ import (
 
 	"go.etcd.io/bbolt"
 
+	"github.com/xmapst/osreapi/internal/crypto"
 	"github.com/xmapst/osreapi/internal/logx"
 	"github.com/xmapst/osreapi/internal/storage/backend"
 	"github.com/xmapst/osreapi/internal/storage/types"
@@ -133,6 +135,51 @@ func (b *Bolt) BatchSet(bucket string, kvs map[string][]byte) error {
 	})
 }
 
+func (b *Bolt) encode(src []byte) ([]byte, error) {
+	var err error
+	// 加密
+	src, err = crypto.Encrypt([]byte(os.Args[0]), src)
+	if err != nil {
+		logx.Errorln(err)
+		return nil, err
+	}
+
+	// 压缩
+	src, err = crypto.Compress(src)
+	if err != nil {
+		logx.Errorln(err)
+		return nil, err
+	}
+
+	// base64
+	return []byte(base64.RawURLEncoding.EncodeToString(src)), nil
+}
+
+func (b *Bolt) decode(src []byte) ([]byte, error) {
+	var err error
+	// base64
+	src, err = base64.RawURLEncoding.DecodeString(string(src))
+	if err != nil {
+		logx.Errorln(err)
+		return nil, err
+	}
+
+	// 解压
+	src, err = crypto.Decompress(src)
+	if err != nil {
+		logx.Errorln(err)
+		return nil, err
+	}
+
+	// 解密
+	dst, err := crypto.Decrypt([]byte(os.Args[0]), src)
+	if err != nil {
+		logx.Errorln(err)
+		return nil, err
+	}
+	return dst, err
+}
+
 func (b *Bolt) Name() string {
 	return "bolt"
 }
@@ -163,15 +210,19 @@ func (b *Bolt) TaskList(table, prefix string) (res types.TaskStates, err error) 
 		if errors.Is(err, bbolt.ErrBucketNotFound) {
 			return nil, backend.ErrNotExist
 		}
-		logx.Warnln(err)
+		logx.Errorln(err)
 		return nil, err
 	}
 	for _, v := range val {
 		var state = new(types.TaskState)
-		var data = bytes.NewReader(v)
-		err = gob.NewDecoder(data).Decode(state)
+		v, err = b.decode(v)
 		if err != nil {
-			logx.Warnln(err)
+			logx.Errorln(err)
+			continue
+		}
+		var data = bytes.NewReader(v)
+		if err = gob.NewDecoder(data).Decode(state); err != nil {
+			logx.Errorln(err)
 			continue
 		}
 		res = append(res, state)
@@ -181,18 +232,23 @@ func (b *Bolt) TaskList(table, prefix string) (res types.TaskStates, err error) 
 }
 
 func (b *Bolt) TaskDetail(table, task string) (res *types.TaskState, err error) {
-	val, err := b.Get(table, filepath.ToSlash(filepath.Join(task, types.TableTask)))
+	key := filepath.ToSlash(filepath.Join(task, types.TableTask))
+	val, err := b.Get(table, key)
 	if err != nil {
 		if errors.Is(err, bbolt.ErrBucketNotFound) {
 			return nil, backend.ErrNotExist
 		}
-		logx.Warnln(err)
+		logx.Errorln(err)
 		return
 	}
 	res = new(types.TaskState)
-	var data = bytes.NewReader(val)
-	err = gob.NewDecoder(data).Decode(res)
+	val, err = b.decode(val)
 	if err != nil {
+		logx.Errorln(err)
+		return
+	}
+	var data = bytes.NewReader(val)
+	if err = gob.NewDecoder(data).Decode(res); err != nil {
 		logx.Warnln(err)
 		return
 	}
@@ -201,29 +257,39 @@ func (b *Bolt) TaskDetail(table, task string) (res *types.TaskState, err error) 
 
 func (b *Bolt) SetTask(table, task string, val *types.TaskState) error {
 	var data bytes.Buffer
-	err := gob.NewEncoder(&data).Encode(val)
-	if err != nil {
-		logx.Warnln(err)
+	if err := gob.NewEncoder(&data).Encode(val); err != nil {
+		logx.Errorln(err)
 		return err
 	}
-	return b.Set(table, filepath.ToSlash(filepath.Join(task, types.TableTask)), data.Bytes())
+	result, err := b.encode(data.Bytes())
+	if err != nil {
+		logx.Errorln(err)
+		return err
+	}
+	key := filepath.ToSlash(filepath.Join(task, types.TableTask))
+	return b.Set(table, key, result)
 }
 
 func (b *Bolt) TaskStepList(table, task string) (res types.TaskStepStates, err error) {
-	val, err := b.Prefix(table, filepath.ToSlash(filepath.Join(task, types.TableTask)))
+	prefix := filepath.ToSlash(filepath.Join(task, types.TableTask))
+	val, err := b.Prefix(table, prefix)
 	if err != nil {
 		if errors.Is(err, bbolt.ErrBucketNotFound) {
 			return nil, backend.ErrNotExist
 		}
-		logx.Warnln(err)
+		logx.Errorln(err)
 		return nil, err
 	}
 	for _, v := range val {
 		var state = new(types.TaskStepState)
-		var data = bytes.NewReader(v)
-		err = gob.NewDecoder(data).Decode(state)
+		v, err = b.decode(v)
 		if err != nil {
-			logx.Warnln(err)
+			logx.Errorln(err)
+			continue
+		}
+		var data = bytes.NewReader(v)
+		if err = gob.NewDecoder(data).Decode(state); err != nil {
+			logx.Errorln(err)
 			continue
 		}
 		res = append(res, state)
@@ -233,19 +299,24 @@ func (b *Bolt) TaskStepList(table, task string) (res types.TaskStepStates, err e
 }
 
 func (b *Bolt) TaskStepDetail(table, task, step string) (res *types.TaskStepState, err error) {
-	val, err := b.Get(table, filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableStep)))
+	key := filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableStep))
+	val, err := b.Get(table, key)
 	if err != nil {
 		if errors.Is(err, bbolt.ErrBucketNotFound) {
 			return nil, backend.ErrNotExist
 		}
-		logx.Warnln(err)
+		logx.Errorln(err)
 		return
 	}
 	res = new(types.TaskStepState)
-	var data = bytes.NewReader(val)
-	err = gob.NewDecoder(data).Decode(res)
+	val, err = b.decode(val)
 	if err != nil {
-		logx.Warnln(err)
+		logx.Errorln(err)
+		return
+	}
+	var data = bytes.NewReader(val)
+	if err = gob.NewDecoder(data).Decode(res); err != nil {
+		logx.Errorln(err)
 		return
 	}
 	return
@@ -255,27 +326,38 @@ func (b *Bolt) SetTaskStep(table, task, step string, val *types.TaskStepState) e
 	var data bytes.Buffer
 	err := gob.NewEncoder(&data).Encode(val)
 	if err != nil {
-		logx.Warnln(err)
+		logx.Errorln(err)
 		return err
 	}
-	return b.Set(table, filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableStep)), data.Bytes())
+	result, err := b.encode(data.Bytes())
+	if err != nil {
+		logx.Errorln(err)
+		return err
+	}
+	key := filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableStep))
+	return b.Set(table, key, result)
 }
 
 func (b *Bolt) TaskStepLogList(table, task, step string) (res types.TaskStepLogs, err error) {
-	val, err := b.Prefix(table, filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableLog)))
+	prefix := filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableLog))
+	val, err := b.Prefix(table, prefix)
 	if err != nil {
 		if errors.Is(err, bbolt.ErrBucketNotFound) {
 			return nil, backend.ErrNotExist
 		}
-		logx.Warnln(err)
+		logx.Errorln(err)
 		return nil, err
 	}
 	for _, v := range val {
 		var state = new(types.TaskStepLog)
-		var data = bytes.NewReader(v)
-		err = gob.NewDecoder(data).Decode(state)
+		v, err = b.decode(v)
 		if err != nil {
-			logx.Warnln(err)
+			logx.Errorln(err)
+			continue
+		}
+		var data = bytes.NewReader(v)
+		if err = gob.NewDecoder(data).Decode(state); err != nil {
+			logx.Errorln(err)
 			continue
 		}
 		res = append(res, state)
@@ -288,8 +370,14 @@ func (b *Bolt) SetTaskStepLog(table, task, step string, line int64, val *types.T
 	var data bytes.Buffer
 	err := gob.NewEncoder(&data).Encode(val)
 	if err != nil {
-		logx.Warnln(err)
+		logx.Errorln(err)
 		return err
 	}
-	return b.Set(table, filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableLog, strconv.FormatInt(line, 10))), data.Bytes())
+	result, err := b.encode(data.Bytes())
+	if err != nil {
+		logx.Errorln(err)
+		return err
+	}
+	key := filepath.ToSlash(filepath.Join(task, types.TableTask, step, types.TableLog, strconv.FormatInt(line, 10)))
+	return b.Set(table, key, result)
 }
