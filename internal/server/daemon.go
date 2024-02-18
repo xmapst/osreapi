@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net"
 	"net/http"
 	"strings"
@@ -97,7 +96,14 @@ func (p *Program) startServer() error {
 
 	_ = retry.Do(
 		func() error {
-			return p.loadListeners([]string{config.App.ListenAddress, listeners.PipeName})
+			if err := p.loadListeners([]string{
+				config.App.ListenAddress,
+				listeners.PipeName,
+			}); err != nil {
+				logx.Errorln(err)
+				return err
+			}
+			return nil
 		},
 		retry.Attempts(0),
 		retry.DelayType(func(n uint, err error, config *retry.Config) time.Duration {
@@ -130,7 +136,9 @@ func (p *Program) loadListeners(hosts []string) error {
 	for _, host := range hosts {
 		proto, addr, ok := strings.Cut(host, "://")
 		if !ok {
-			return fmt.Errorf("bad format %s, expected PROTO://ADDR", host)
+			logx.Warnf("bad format %s, expected PROTO://ADDR", host)
+			proto = "tcp"
+			addr = host
 		}
 		ln, err := listeners.Init(proto, addr, nil)
 		if err != nil {
