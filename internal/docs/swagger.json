@@ -200,6 +200,7 @@
                         "items": {
                             "type": "string"
                         },
+                        "collectionFormat": "csv",
                         "description": "task envs",
                         "name": "env_vars",
                         "in": "query"

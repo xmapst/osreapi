@@ -233,7 +233,8 @@ paths:
         in: query
         name: timeout
         type: string
-      - description: task envs
+      - collectionFormat: csv
+        description: task envs
         in: query
         items:
           type: string

@@ -102,7 +102,7 @@ func Get(c *gin.Context) {
 				},
 			}
 		}
-		err := fmt.Errorf("exit code: %d", taskStepState.Code)
+		err = fmt.Errorf("exit code: %d", taskStepState.Code)
 		if taskStepState.Message != "" {
 			err = fmt.Errorf(taskStepState.Message)
 		}
@@ -140,7 +140,7 @@ func stepDetailWebsocket(c *gin.Context, ws *websocket.Conn, latest *int64) {
 	for range ticker.C {
 		taskStepState, err := storage.TaskStepDetail(task, step)
 		if err != nil {
-			err := ws.WriteJSON(base.NewRes(nil, err, base.CodeErrNoData))
+			err = ws.WriteJSON(base.NewRes(nil, err, base.CodeErrNoData))
 			if err != nil {
 				logx.Errorln(err)
 			}
@@ -153,7 +153,7 @@ func stepDetailWebsocket(c *gin.Context, ws *websocket.Conn, latest *int64) {
 		case exec.Pending:
 			// 只发送一次
 			pendingOnce.Do(func() {
-				err := ws.WriteJSON(base.NewRes([]types.TaskStepLog{
+				err = ws.WriteJSON(base.NewRes([]types.TaskStepLog{
 					{
 						Timestamp: time.Now().UnixNano(),
 						Line:      1,
@@ -169,7 +169,7 @@ func stepDetailWebsocket(c *gin.Context, ws *websocket.Conn, latest *int64) {
 		case exec.Paused:
 			// 只发送一次
 			pausedOnce.Do(func() {
-				err := ws.WriteJSON(base.NewRes([]types.TaskStepLog{
+				err = ws.WriteJSON(base.NewRes([]types.TaskStepLog{
 					{
 						Timestamp: time.Now().UnixNano(),
 						Line:      1,
@@ -198,13 +198,13 @@ func stepDetailWebsocket(c *gin.Context, ws *websocket.Conn, latest *int64) {
 				if taskStepState.Message != "" {
 					errMsg = fmt.Errorf(taskStepState.Message)
 				}
-				err := ws.WriteJSON(base.NewRes(res, errMsg, base.CodeExecErr))
+				err = ws.WriteJSON(base.NewRes(res, errMsg, base.CodeExecErr))
 				if err != nil {
 					logx.Errorln(err)
 				}
 				return
 			}
-			err := ws.WriteJSON(base.NewRes(res, nil, base.CodeSuccess))
+			err = ws.WriteJSON(base.NewRes(res, nil, base.CodeSuccess))
 			if err != nil {
 				logx.Errorln(err)
 			}
