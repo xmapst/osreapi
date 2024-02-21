@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -42,6 +43,7 @@ func New(debug bool, maxRequests int64) *gin.Engine {
 	router := gin.New()
 	router.Use(
 		cors.Default(),
+		gzip.Gzip(gzip.DefaultCompression),
 		func(c *gin.Context) {
 			c.Header("Server", "Gin")
 			c.Header("X-Server", "Gin")
