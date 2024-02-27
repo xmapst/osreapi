@@ -27,7 +27,7 @@ require (
 	github.com/yuin/gopher-lua v1.1.1
 	go.etcd.io/bbolt v1.3.8
 	go.starlark.net v0.0.0-20240123142251-f86470692795
-	go.uber.org/zap v1.26.0
+	go.uber.org/zap v1.27.0
 	golang.org/x/sys v0.17.0
 	golang.org/x/text v0.14.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
