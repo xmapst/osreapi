@@ -18,7 +18,7 @@ require (
 	github.com/qri-io/starlib v0.5.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/segmentio/ksuid v1.0.4
-	github.com/shirou/gopsutil/v3 v3.24.1
+	github.com/shirou/gopsutil/v3 v3.24.2
 	github.com/spf13/cobra v1.8.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
