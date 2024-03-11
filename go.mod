@@ -23,7 +23,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.3
-	github.com/traefik/yaegi v0.15.1
+	github.com/traefik/yaegi v0.16.0
 	github.com/yuin/gopher-lua v1.1.1
 	go.etcd.io/bbolt v1.3.9
 	go.starlark.net v0.0.0-20240123142251-f86470692795
