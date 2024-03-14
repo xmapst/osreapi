@@ -184,14 +184,14 @@ type opt struct {
 	noRun        bool              // compile, but do not run
 	fastChan     bool              // disable cancellable chan operations
 	specialStdio bool              // allows os.Stdin, os.Stdout, os.Stderr to not be file descriptors
-	unrestricted bool              // allow use of non sandboxed symbols
+	unrestricted bool              // allow use of non-sandboxed symbols
 }
 
 // Interpreter contains global resources and state.
 type Interpreter struct {
-	// id is an atomic counter counter used for run cancellation,
+	// id is an atomic counter used for run cancellation,
 	// only accessed via runid/stop
-	// Located at start of struct to ensure proper alignment on 32 bit
+	// Located at start of struct to ensure proper alignment on 32-bit
 	// architectures.
 	id uint64
 
@@ -405,21 +405,24 @@ func New(options Options) *Interpreter {
 }
 
 const (
-	bltnAppend  = "append"
-	bltnCap     = "cap"
-	bltnClose   = "close"
-	bltnComplex = "complex"
-	bltnImag    = "imag"
-	bltnCopy    = "copy"
-	bltnDelete  = "delete"
-	bltnLen     = "len"
-	bltnMake    = "make"
-	bltnNew     = "new"
-	bltnPanic   = "panic"
-	bltnPrint   = "print"
-	bltnPrintln = "println"
-	bltnReal    = "real"
-	bltnRecover = "recover"
+	bltnAlignof  = "unsafe.Alignof"
+	bltnAppend   = "append"
+	bltnCap      = "cap"
+	bltnClose    = "close"
+	bltnComplex  = "complex"
+	bltnImag     = "imag"
+	bltnCopy     = "copy"
+	bltnDelete   = "delete"
+	bltnLen      = "len"
+	bltnMake     = "make"
+	bltnNew      = "new"
+	bltnOffsetof = "unsafe.Offsetof"
+	bltnPanic    = "panic"
+	bltnPrint    = "print"
+	bltnPrintln  = "println"
+	bltnReal     = "real"
+	bltnRecover  = "recover"
+	bltnSizeof   = "unsafe.Sizeof"
 )
 
 func initUniverse() *scope {
